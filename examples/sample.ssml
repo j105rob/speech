@@ -1,0 +1,84 @@
+<speak>
+    <amazon:breath duration="medium"/>
+    
+    <p>
+        Welcome to the <emphasis level="strong">AWS Polly SSML Toolkit</emphasis> demonstration.
+        <break time="800ms"/>
+        This sample showcases various SSML features supported by Amazon Polly.
+    </p>
+    
+    <break time="1s"/>
+    
+    <p>
+        Let me show you different speech effects:
+        <break time="500ms"/>
+        
+        First, here's some <prosody rate="slow" pitch="low">slow and low</prosody> speech,
+        followed by <prosody rate="fast" pitch="high">fast and high</prosody> speech.
+    </p>
+    
+    <break time="1s"/>
+    
+    <p>
+        <amazon:effect name="whispered">
+            This part is whispered for dramatic effect.
+        </amazon:effect>
+        <break time="800ms"/>
+        And now back to normal speech.
+    </p>
+    
+    <break time="1s"/>
+    
+    <p>
+        Here are some practical examples:
+        <break time="500ms"/>
+        
+        Today's date is <say-as interpret-as="date">2024-01-15</say-as>.
+        <break time="300ms"/>
+        
+        The time is <say-as interpret-as="time">14:30:00</say-as>.
+        <break time="300ms"/>
+        
+        For support, call <say-as interpret-as="telephone">555-123-4567</say-as>.
+        <break time="300ms"/>
+        
+        The temperature is <say-as interpret-as="cardinal">72</say-as> degrees.
+    </p>
+    
+    <break time="1s"/>
+    
+    <p>
+        Let's try some phonetic pronunciation:
+        <break time="300ms"/>
+        You can say <phoneme alphabet="ipa" ph="təˈmeɪtoʊ">tomato</phoneme>
+        or <phoneme alphabet="ipa" ph="təˈmɑːtoʊ">tomato</phoneme>.
+    </p>
+    
+    <break time="1s"/>
+    
+    <p>
+        Here's a countdown with emphasis:
+        <break time="500ms"/>
+        <emphasis level="strong">5</emphasis>
+        <break time="800ms"/>
+        <emphasis level="strong">4</emphasis>
+        <break time="800ms"/>
+        <emphasis level="strong">3</emphasis>
+        <break time="800ms"/>
+        <emphasis level="strong">2</emphasis>
+        <break time="800ms"/>
+        <emphasis level="strong">1</emphasis>
+        <break time="500ms"/>
+        <prosody pitch="high" rate="fast">Go!</prosody>
+    </p>
+    
+    <break time="2s"/>
+    
+    <p>
+        <amazon:breath duration="short"/>
+        Thank you for exploring the AWS Polly SSML Toolkit.
+        <break time="500ms"/>
+        <prosody rate="slow">Happy speech synthesis!</prosody>
+    </p>
+</speak>
+
