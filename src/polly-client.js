@@ -1,6 +1,6 @@
 import { PollyClient as AWSPollyClient, SynthesizeSpeechCommand, DescribeVoicesCommand } from '@aws-sdk/client-polly';
-import { writeFileSync, mkdirSync } from 'fs';
-import { dirname } from 'path';
+import { writeFileSync, mkdirSync, readFileSync, existsSync } from 'fs';
+import { dirname, extname } from 'path';
 import dotenv from 'dotenv';
 
 // Load environment variables
@@ -108,6 +108,65 @@ export class PollyClient {
       console.error('❌ Error fetching voices:', error);
       throw error;
     }
+  }
+
+  /**
+   * Synthesize speech from a text file
+   * @param {string} filePath - Path to the text file
+   * @param {Object} options - Synthesis options
+   * @returns {Promise<Object>} - Result with audio data and metadata
+   */
+  async synthesizeFromFile(filePath, options = {}) {
+    // Check if file exists
+    if (!existsSync(filePath)) {
+      throw new Error(`File not found: ${filePath}`);
+    }
+
+    try {
+      console.log(`📖 Reading text from file: ${filePath}`);
+      const fileContent = readFileSync(filePath, 'utf8').trim();
+      
+      if (!fileContent) {
+        throw new Error('File is empty or contains only whitespace');
+      }
+
+      const fileExt = extname(filePath).toLowerCase();
+      let textToSynthesize;
+
+      // Determine if the file contains SSML or plain text
+      if (fileExt === '.ssml' || fileContent.includes('<speak>')) {
+        console.log('📝 Detected SSML content');
+        textToSynthesize = fileContent;
+      } else {
+        console.log('📝 Detected plain text content - wrapping in SSML');
+        // Escape any XML characters and wrap in SSML
+        const escapedText = this._escapeText(fileContent);
+        textToSynthesize = `<speak>${escapedText}</speak>`;
+      }
+
+      console.log(`📊 Content preview: ${textToSynthesize.substring(0, 100)}${textToSynthesize.length > 100 ? '...' : ''}`);
+      
+      // Use the regular synthesize method
+      return await this.synthesize(textToSynthesize, options);
+
+    } catch (error) {
+      console.error(`❌ Error reading file ${filePath}:`, error);
+      throw error;
+    }
+  }
+
+  /**
+   * Escape special XML characters in text
+   * @param {string} text - Text to escape
+   * @returns {string} - Escaped text
+   */
+  _escapeText(text) {
+    return text
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&apos;');
   }
 
   /**

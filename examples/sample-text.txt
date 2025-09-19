@@ -1,0 +1,5 @@
+Welcome to the AWS Polly SSML Toolkit! This is a demonstration of loading plain text from a file and converting it to speech. The toolkit automatically detects whether your file contains plain text or SSML markup, and handles the conversion appropriately.
+
+This text will be automatically escaped and wrapped in SSML tags, making it safe for speech synthesis. You can include special characters like & < > " ' and they will be properly handled.
+
+Thank you for using our speech synthesis toolkit!

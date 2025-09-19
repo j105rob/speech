@@ -75,6 +75,44 @@ await client.synthesize(ssml, {
 });
 ```
 
+### Synthesize from Text Files
+
+The toolkit supports synthesizing speech directly from text files, automatically detecting whether the file contains plain text or SSML markup:
+
+```javascript
+import { PollyClient } from './src/polly-client.js';
+
+const client = new PollyClient();
+
+// Synthesize from a plain text file
+await client.synthesizeFromFile('./my-text.txt', {
+  voiceId: 'Matthew',
+  outputFile: 'my-speech.mp3'
+});
+
+// Synthesize from an SSML file (also works)
+await client.synthesizeFromFile('./my-speech.ssml', {
+  voiceId: 'Joanna',
+  outputFile: 'my-speech.mp3'
+});
+```
+
+You can also include file content in your SSML using the SSMLBuilder:
+
+```javascript
+import { SSMLBuilder } from './src/ssml-builder.js';
+
+const builder = new SSMLBuilder();
+const ssml = builder
+  .speak()
+  .text('Here is the content from a file: ')
+  .pause('500ms')
+  .textFromFile('./story.txt')
+  .pause('1s')
+  .emphasis('The End!', 'strong')
+  .build();
+```
+
 ### Using Templates
 
 ```javascript
@@ -195,19 +233,36 @@ Run the interactive demo to learn SSML hands-on:
 npm run interactive
 ```
 
-### Command Line Synthesis
+### File Input Demo
 
-Synthesize SSML files from the command line:
+Try the file input functionality with the dedicated demo:
 
 ```bash
-# Synthesize with default voice (Joanna)
+node examples/file-text-demo.js
+```
+
+This demo showcases:
+- Synthesizing from plain text files
+- Including file content in SSML with SSMLBuilder
+- Automatic detection of file types
+- Proper XML escaping for plain text
+
+### Command Line Synthesis
+
+Synthesize text or SSML files from the command line. The CLI automatically detects file type:
+
+```bash
+# Synthesize plain text file with default voice (Joanna)
+npm run synth examples/sample-text.txt
+
+# Synthesize SSML file with default voice
 npm run synth examples/sample.ssml
 
 # Use a specific voice
-npm run synth examples/sample.ssml Matthew
+npm run synth examples/story-excerpt.txt Matthew
 
 # Specify output file
-npm run synth examples/sample.ssml Joanna my-audio.mp3
+npm run synth examples/sample-text.txt Joanna my-audio.mp3
 
 # List available voices
 npm run synth voices
@@ -215,6 +270,11 @@ npm run synth voices
 # Test a voice
 npm run synth test Joanna
 ```
+
+**Supported file types:**
+- Plain text files (`.txt`, `.md`, etc.) - Automatically wrapped in SSML
+- SSML files (`.ssml`) - Used directly
+- Any text file - Auto-detected based on content
 
 ### Validation
 
@@ -236,6 +296,7 @@ const builder = new SSMLBuilder();
 // Basic methods
 builder.speak()                    // Start SSML document
 builder.text(string)               // Add plain text
+builder.textFromFile(filePath)     // Add text from file (auto-escaped)
 builder.pause(duration)            // Add pause ('500ms', '1s', 'weak', 'strong')
 builder.emphasis(text, level)      // Add emphasis ('strong', 'moderate', 'reduced')
 builder.build()                    // Generate final SSML
@@ -271,8 +332,11 @@ AWS Polly integration for speech synthesis:
 ```javascript
 const client = new PollyClient(options);
 
-// Synthesize speech
+// Synthesize speech from SSML
 await client.synthesize(ssml, options)
+
+// Synthesize speech from text file (auto-detects SSML vs plain text)
+await client.synthesizeFromFile(filePath, options)
 
 // Test voice
 await client.testVoice(voiceId, testText)

@@ -1,6 +1,7 @@
 /**
  * SSML Builder - A fluent API for building SSML documents
  */
+import { readFileSync, existsSync } from 'fs';
 export class SSMLBuilder {
   constructor() {
     this.elements = [];
@@ -30,6 +31,31 @@ export class SSMLBuilder {
   text(text) {
     this.elements.push(this._escapeText(text));
     return this;
+  }
+
+  /**
+   * Add text from a file
+   * @param {string} filePath - Path to the text file
+   * @returns {SSMLBuilder}
+   */
+  textFromFile(filePath) {
+    if (!existsSync(filePath)) {
+      throw new Error(`File not found: ${filePath}`);
+    }
+
+    try {
+      const fileContent = readFileSync(filePath, 'utf8').trim();
+      
+      if (!fileContent) {
+        throw new Error('File is empty or contains only whitespace');
+      }
+
+      // Add the file content as escaped text
+      this.elements.push(this._escapeText(fileContent));
+      return this;
+    } catch (error) {
+      throw new Error(`Error reading file ${filePath}: ${error.message}`);
+    }
   }
 
   /**
